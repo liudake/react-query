@@ -1,0 +1,68 @@
+.App {
+  padding: 20px;
+}
+
+.App-title {
+  font-weight: bold;
+  font-size: 30px;
+  color: #333;
+}
+
+.App-form {
+  margin-top: 20px;
+}
+
+.App-input {
+  margin-left: 10px;
+  padding: 4px 11px;
+  font-size: 14px;
+  line-height: 1.5715;
+  color: #000000;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+.App-content {
+  width: 100%;
+  height: 200px;
+  margin-top: 20px;
+  border: 1px solid;
+}
+
+.App-info {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  border-radius: 10px;
+  border: 1px solid #333;
+  background-color: #f3f3f3;
+}
+
+.App-loading, .App-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: inherit;
+}
+
+
+.App-info__left {
+  width: 60px;
+}
+
+.App-info__midd {
+  flex: 1;
+}
+
+.App-info__left .avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.App-info__midd .id {
+  color: #7b7b7b
+}
