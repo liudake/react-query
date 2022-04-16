@@ -15,6 +15,7 @@ function App() {
   const [msg, setMsg] = useState("");
   const [val, setVal] = useState("");
   const [info, setInfo] = useState(DEFAULT_INFO);
+  // 利用防抖函数进行优化查询接口，详细情况请看useDebounce接口说明
   const delayedVal = useDebounce((q) => sendVal(q), DELAY);
   const inputChange = (e) => {
     const val = e.target.value;
