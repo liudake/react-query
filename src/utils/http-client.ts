@@ -4,7 +4,19 @@ const HEADERS = {
   "Content-Type": "application/json",
 };
 
+export interface ReqData {
+  [x: string]: any;
+}
+
+export interface ReqConfig {
+  url: string;
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  data?: ReqData;
+  handleError?: (error: any) => any;
+}
+
 class HttpClient {
+  baseUrl: string;
   constructor() {
     this.baseUrl = BASE_URL;
   }
@@ -13,19 +25,18 @@ class HttpClient {
     return JSON.stringify(data);
   };
 
-  fetch = async ({ url, data, method }) => {
+  fetch = async ({ url, data, method }: ReqConfig) => {
     const reqOptions = {
       body: this.stringify(data),
       method,
       headers: HEADERS,
     };
     const parseUrl = `${this.baseUrl}${url}`;
-    let res = { succ: false, data: null };
+    let res = { succ: false, data: null } as ReqData;
     try {
       const response = await fetch(parseUrl, reqOptions);
       res.data = await response.json();
       if (!response.ok) {
-        console.log("res.data", res.data);
         throw new Error(res.data.error);
       }
       res.succ = true;

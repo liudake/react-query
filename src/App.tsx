@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { getInfoQq } from "./api/qq";
 import useDebounce from "./hooks/useDebounce";
-
+import { IInfoQqBase, IInfoQqRes } from "./@types/qq";
 import "./App.css";
-const DELAY = 500;
+const DELAY: number = 500;
 const DEFAULT_INFO = {
   qq: "",
   code: -1,
   avatar: "",
-};
+  name: "",
+} as IInfoQqBase;
 function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -27,7 +28,7 @@ function App() {
     setLoading(true);
     setError(false);
     try {
-      const res = await getInfoQq(val);
+      const res = await getInfoQq(val) as IInfoQqRes;
       const { code = 1, name = "", qlogo = "", qq = "", msg = "" } = res || {};
       if (code === 1) {
         setInfo({
@@ -36,10 +37,11 @@ function App() {
           avatar: qlogo,
         });
       } else {
-        handleFail(msg);
+        throw new Error(msg);
       }
     } catch (error) {
-      handleFail(error.message);
+      const { message = "" } = (error as { message: string }) || {};
+      handleFail(message);
       console.log("DEBUG: sendVal => error", error);
     }
     setLoading(false);
