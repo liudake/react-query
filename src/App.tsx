@@ -1,34 +1,36 @@
 import React, { useState } from "react";
 import { getInfoQq } from "./api/qq";
 import useDebounce from "./hooks/useDebounce";
+import useAsync from "./hooks/useAsync";
+
 import { IInfoQqBase, IInfoQqRes } from "./@types/qq";
 import "./App.css";
 const DELAY: number = 500;
+
 const DEFAULT_INFO = {
   qq: "",
   code: -1,
   avatar: "",
   name: "",
 } as IInfoQqBase;
+
 function App() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [msg, setMsg] = useState("");
   const [val, setVal] = useState("");
   const [info, setInfo] = useState(DEFAULT_INFO);
   // 利用防抖函数进行优化查询接口，详细情况请看useDebounce接口说明
   const delayedVal = useDebounce((q) => sendVal(q), DELAY);
+  
   const inputChange = (e) => {
     const val = e.target.value;
     setVal(val);
     delayedVal(val);
   };
 
+  const state = useAsync(false, sendVal);
+
   async function sendVal(val) {
-    setLoading(true);
-    setError(false);
     try {
-      const res = await getInfoQq(val) as IInfoQqRes;
+      const res = (await getInfoQq(val)) as IInfoQqRes;
       const { code = 1, name = "", qlogo = "", qq = "", msg = "" } = res || {};
       if (code === 1) {
         setInfo({
@@ -44,11 +46,9 @@ function App() {
       handleFail(message);
       console.log("DEBUG: sendVal => error", error);
     }
-    setLoading(false);
   }
   function handleFail(msg) {
-    setError(true);
-    setMsg(msg);
+    state.setFail(msg);
     setInfo(DEFAULT_INFO);
   }
 
@@ -66,8 +66,8 @@ function App() {
         />
       </div>
       <div className="App-content">
-        {loading && <div className="App-loading">加载中...</div>}
-        {!loading && info.qq && (
+        {state.loading && <div className="App-loading">加载中...</div>}
+        {!state.loading && info.qq && (
           <div className="App-info">
             <div className="App-info__left">
               <img src={info.avatar} className="avatar" alt="avatar" />
@@ -78,7 +78,7 @@ function App() {
             </div>
           </div>
         )}
-        {error && <div className="App-error">{msg}</div>}
+        {state.error && <div className="App-error">{state.msg}</div>}
       </div>
     </div>
   );
